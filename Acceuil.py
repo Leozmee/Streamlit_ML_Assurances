@@ -121,7 +121,7 @@ elif st.session_state.page == "Affichage du résultat":
                 position = "élevées"
 
             ax.text(charge_predite, 1.3,
-                    f'Vos charges : {charge_predite:.2f}€\n(charges {position})',
+                    f'Vos charges estimées: {charge_predite:.2f}€\n(charges {position})',
                     color='slateblue',
                     horizontalalignment='center',
                     verticalalignment='bottom')
