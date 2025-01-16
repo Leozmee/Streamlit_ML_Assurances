@@ -25,14 +25,14 @@ page = st.sidebar.selectbox(
 
 if st.session_state.page == "Accueil":
     st.header("Bienvenue sur l'application")
+    st.markdown("---")  
     st.write("Utilisez le menu à gauche pour accéder aux différentes fonctionnalités.")
     if st.button ("Remplir le formiulaire") :
         st.session_state.page = "Calcul des charges"
 
 elif st.session_state.page == "Calcul des charges":
     st.header("Renseignez vos informations")
-    st.write("  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁")
-    
+    st.markdown("---")  
 
     age = st.number_input("Âge", min_value=18, max_value=100)
     poids = st.slider("Poids en kg", min_value=20.0, max_value=300.0, step=0.1)
@@ -44,8 +44,7 @@ elif st.session_state.page == "Calcul des charges":
     sexe = st.selectbox("Sexe", options=["male", "female"])
     fumeur = st.selectbox("Êtes-vous fumeur ?", options=["yes", "no"])
     enfants = st.number_input("Nombre d'enfants", min_value=0, max_value=10, step=1)
-    region = st.selectbox("Région", options=["southwest", "southeast", "northwest", "northeast"])
-
+    region = st.selectbox("Région", options=["southwest", "southeast", "northwest", "northeast"])   
 
     if st.button("Valider"):
         if age and taille and poids and sexe and fumeur and region:
@@ -61,10 +60,12 @@ elif st.session_state.page == "Calcul des charges":
             st.session_state.page = "Affichage du résultat"
         else:
             st.error("Veuillez renseigner tous les champs.")
-    st.write("  ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁")
+    
+     
 
 elif st.session_state.page == "Affichage du résultat":
     st.header("Affichage du résultat")
+    st.markdown("---")  
     st.write("Voici la prédiction du montant de charges à payer.")
 
 
@@ -76,12 +77,43 @@ elif st.session_state.page == "Affichage du résultat":
         model_input_df = pd.DataFrame([user_data])
         try:
             charge_predite = model.predict(model_input_df)[0]
-            st.success(f"Le montant des charges à payer est de : **{charge_predite:.2f} €**")
 
-            arr = np.random.normal(1, 1, size=100)
-            fig, ax = plt.subplots()
-            ax.hist(arr, bins=20)
+            #affichage du graphique
+               
+            fig, ax = plt.subplots(figsize=(10, 4))
+            
+            echelle_charges = np.linspace(0, 60000, 2)
+            ax.plot(echelle_charges, [1, 1], '-', color='lightgray', linewidth=2)
+
+            # Placement du point 
+            ax.scatter(charge_predite, 1, color='red', s=60, zorder=5)
+
+            ax.set_ylim(0.5, 1.5)
+            ax.set_xlim(0, 60000)
+            ax.set_yticks([])
+            ax.spines['left'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['top'].set_visible(False)
+
+            ax.set_xlabel('Montant des charges (€)')
+            ax.axvline(charge_predite, color='lightpink', linestyle='--', alpha=0.3)
+
+            if charge_predite < 20000:
+              position = "faibles"
+            elif charge_predite < 40000:
+              position = "moyennes"
+            else:
+              position = "élevées"
+
+            ax.text(charge_predite, 1.3, f'Vos charges : {charge_predite:.2f}€\n(charges {position})',color='slateblue',
+             horizontalalignment='center', verticalalignment='bottom')
+
+            # Affichage  
             st.pyplot(fig)
+
+                 
+
+            st.success(f"Le montant des charges à payer est de : **{charge_predite:.2f} €**")
 
         except Exception as e:
             st.error(f"Erreur lors de la prédiction : {e}")
