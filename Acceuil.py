@@ -3,10 +3,11 @@ import joblib
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from exportData import ExportData
 from sklearn.model_selection import train_test_split
 
 
-model = joblib.load('serialized_model.pkl')
+model = joblib.load('serialized_model_1.pkl')
 df = pd.read_csv('df_assu.csv')
 
 X = df.drop('charges', axis=1)
@@ -34,6 +35,7 @@ if st.session_state.page == "Accueil":
     st.write("Utilisez le menu à gauche pour accéder aux différentes fonctionnalités.")
     if st.button("Remplir le formulaire"):
         st.session_state.page = "Calcul des charges"
+        st.rerun()
 
 elif st.session_state.page == "Calcul des charges":
     st.header("Renseignez vos informations")
@@ -63,6 +65,7 @@ elif st.session_state.page == "Calcul des charges":
                 "region": region,
             }
             st.session_state.page = "Affichage du résultat"
+            st.rerun()
         else:
             st.error("Veuillez renseigner tous les champs.")
 
