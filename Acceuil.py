@@ -93,6 +93,7 @@ elif st.session_state.page == "Affichage du résultat":
             borne_sup = charge_predite + marge_erreur
 
             # Affichage du graphique
+            #
             fig, ax = plt.subplots(figsize=(10, 4))
 
             echelle_charges = np.linspace(0, 60000, 2)
